@@ -3,6 +3,7 @@ package domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -33,6 +34,7 @@ public class Home {
 		this.address = address;
 		this.size = size;
 		this.nbRooms = nbRooms;
+		this.heaters = new ArrayList<Heater>();
 	}
 	
 	@Id
@@ -63,7 +65,7 @@ public class Home {
 		this.nbRooms = nbRooms;
 	}
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.LAZY, cascade={CascadeType.PERSIST})
 	@JoinColumn(name="INHABITANT_ID")
 	public Person getInhabitant() {
 		return inhabitant;
@@ -72,12 +74,17 @@ public class Home {
 		this.inhabitant = inhabitant;
 	}
 	
-	@OneToMany(mappedBy="home")
+	@OneToMany(mappedBy="home", cascade={CascadeType.PERSIST})
 	public List<Heater> getHeaters() {
 		return heaters;
 	}
 	public void setHeaters(List<Heater> heaters) {
 		this.heaters = heaters;
+	}
+	
+	public void addHeater(Heater h) {
+		h.setHome(this);
+		heaters.add(h);
 	}
 	
 }

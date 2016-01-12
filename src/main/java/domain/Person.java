@@ -3,10 +3,10 @@ package domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -37,14 +37,17 @@ public class Person {
 		super();
 		this.homes = new ArrayList<Home>();
 		this.friends = new ArrayList<Person>();
+		this.eds = new ArrayList<ElectronicDevice>();
 	}
 
-	public Person(String name, String firstName, String mail, List<Home> homes) {
+	public Person(String name, String firstName, String mail) {
 		super();
 		this.name = name;
 		this.firstName = firstName;
 		this.mail = mail;
-		this.homes = homes;
+		this.homes = new ArrayList<Home>();
+		this.friends = new ArrayList<Person>();
+		this.eds = new ArrayList<ElectronicDevice>();
 	}
 	
 	@Id
@@ -76,7 +79,7 @@ public class Person {
 		this.firstName = firstName;
 	}
 
-	@OneToMany(mappedBy="inhabitant")
+	@OneToMany(mappedBy="inhabitant", cascade={CascadeType.PERSIST})
 	public List<Home> getHomes() {
 		return homes;
 	}
@@ -86,6 +89,10 @@ public class Person {
 		this.homes = homes;
 	}
 
+	public void addHome(Home h){
+		h.setInhabitant(this);
+		this.homes.add(h);
+	}
 
 	public String getMail() {
 		return mail;
@@ -94,7 +101,7 @@ public class Person {
 		this.mail = mail;
 	}
 	
-	@OneToMany(mappedBy="person")
+	@OneToMany(mappedBy="person", cascade={CascadeType.PERSIST})
 	public List<ElectronicDevice> getEds() {
 		return eds;
 	}
@@ -102,11 +109,18 @@ public class Person {
 	public void setEds(List<ElectronicDevice> eds) {
 		this.eds = eds;
 	}
+	
+	
+	public void addEd(ElectronicDevice ed) {
+		ed.setPerson(this);
+		this.eds.add(ed);
+	}
 
+	// not mandatory, if present new table friend created, else new table person.person automatically created
     @JoinTable(name = "Friends", joinColumns = {
             @JoinColumn(name = "Friend_Id", referencedColumnName = "PERSON_ID")}, inverseJoinColumns = {
-            @JoinColumn(name = "Friend_Id1", referencedColumnName = "PERSON_ID")})
-     @ManyToMany
+            @JoinColumn(name = "FriendOf_Id", referencedColumnName = "PERSON_ID")})
+    @ManyToMany(cascade={CascadeType.PERSIST})
 	public List<Person> getFriends() {
 		return friends;
 	}
@@ -116,8 +130,8 @@ public class Person {
 	}
 	
 	public void addFriends(Person p){
-		this.friends.add(p);
 		p.friends.add(this);
+		this.friends.add(p);
 	}
 
 	@Override
