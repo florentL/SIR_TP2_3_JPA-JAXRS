@@ -14,6 +14,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
 @NamedQueries({
@@ -22,6 +23,7 @@ import javax.persistence.OneToMany;
     @NamedQuery(name = "findPersonByName", query = "SELECT p FROM Person p WHERE p.name = :PersonName"),
     @NamedQuery(name = "findPersonFriends", query = "SELECT p FROM Person p Join p.friends f WHERE f.id = :id")
 })
+
 public class Person {
 
 	private Long id;

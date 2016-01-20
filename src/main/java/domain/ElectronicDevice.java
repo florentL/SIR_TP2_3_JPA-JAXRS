@@ -5,10 +5,16 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
 public class ElectronicDevice extends SmartDevice{
 	private Person person;
+	
+	
+	public ElectronicDevice() {
+		// TODO Auto-generated constructor stub
+	}
 	
 	public ElectronicDevice(int consumption) {
 		super(consumption);

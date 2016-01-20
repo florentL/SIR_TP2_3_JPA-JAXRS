@@ -1,11 +1,15 @@
 package domain;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import javax.xml.bind.annotation.XmlRootElement;
 
-@MappedSuperclass
+
+
+@Entity
 public abstract class SmartDevice {
 	private Long id;
 	private int consumption;

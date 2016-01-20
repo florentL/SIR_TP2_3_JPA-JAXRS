@@ -12,8 +12,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import org.codehaus.jackson.annotate.JsonIgnore;
+
+
 
 @Entity
+@XmlRootElement
 public class Home {
 
 	private Long id;
@@ -67,6 +73,7 @@ public class Home {
 	
 	@ManyToOne(fetch=FetchType.LAZY, cascade={CascadeType.PERSIST})
 	@JoinColumn(name="INHABITANT_ID")
+	@JsonIgnore
 	public Person getInhabitant() {
 		return inhabitant;
 	}
@@ -75,6 +82,8 @@ public class Home {
 	}
 	
 	@OneToMany(mappedBy="home", cascade={CascadeType.PERSIST})
+	@JsonIgnore
+
 	public List<Heater> getHeaters() {
 		return heaters;
 	}

@@ -45,13 +45,13 @@ public class JpaTest {
 		tx.commit();
 		
 //		criteria request
-		CriteriaBuilder criteriaBuilder = manager.getCriteriaBuilder();
-		CriteriaQuery<String> query = criteriaBuilder.createQuery(String.class);
-		Root<Person> from = query.from(Person.class);
-		query.multiselect(from.get("firstName")).where(from.get("name").in("Andronov"));
+//		CriteriaBuilder criteriaBuilder = manager.getCriteriaBuilder();
+//		CriteriaQuery<String> query = criteriaBuilder.createQuery(String.class);
+//		Root<Person> from = query.from(Person.class);
+//		query.multiselect(from.get("firstName")).where(from.get("name").in("Andronov"));
 		
-		String result = manager.createQuery(query).getSingleResult();
-		System.out.println(result);
+//		String result = manager.createQuery(query).getSingleResult();
+//		System.out.println(result);
 		
 		
 //		for (Home h : resultList) {
