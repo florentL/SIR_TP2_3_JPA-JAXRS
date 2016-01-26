@@ -95,7 +95,7 @@ public class JpaTest {
 		p.addFriends(p3);
 		p3.addFriends(p4);
 		Home h = new Home("3 rue des Juifs", 100, 4);
-		Home h2 = new Home("53 rue Jean Jaurès", 450, 13);
+		Home h2 = new Home("53 rue Jean JaurÃ¨s", 450, 13);
 		Home h3 = new Home("1048 rue des Peupliers", 30, 1);
 		p.addHome(h);
 		p2.addHome(h2);

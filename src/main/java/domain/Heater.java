@@ -5,9 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import org.codehaus.jackson.annotate.JsonIgnore;
+import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 
@@ -24,7 +22,7 @@ public class Heater extends SmartDevice{
 	
 	@ManyToOne(fetch=FetchType.LAZY, cascade={CascadeType.PERSIST})
 	@JoinColumn(name="HOME_ID")
-	@JsonIgnore
+	@XmlTransient
 	public Home getHome() {
 		return home;
 	}

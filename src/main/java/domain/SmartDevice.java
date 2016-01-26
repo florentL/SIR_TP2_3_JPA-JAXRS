@@ -9,7 +9,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 
 
-@Entity
+@Entity // Crée une seule table SmartDevice avec des ElectronicDevice et des Heater (classes fille)
+//@MappedSuperclass // Ne crée pas de table pour SmartDevice mais crée 2 tables ED et Heater (classes fille)
 public abstract class SmartDevice {
 	private Long id;
 	private int consumption;

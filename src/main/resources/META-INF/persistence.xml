@@ -48,13 +48,13 @@
             <property name="hibernate.ejb.cfgfile" value="/hibernate.cfg.xml"/>
             <property name="hibernate.hbm2ddl.auto" value="create"/>
             -->
-            <property name="hibernate.hbm2ddl.auto" value="create"/>
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
             <property name="hibernate.archive.autodetection" value="class, hbm"/>
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
             <property name="hibernate.connection.password" value="root"/>
-            <property name="hibernate.connection.url" value="jdbc:mysql://mysql.istic.univ-rennes1.fr/base_15010319"/>
-            <property name="hibernate.connection.username" value="user_15010319"/>
+            <property name="hibernate.connection.url" value="jdbc:mysql://mysql.istic.univ-rennes1.fr/base_15007257"/>
+            <property name="hibernate.connection.username" value="user_15007257"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
             <property name="hibernate.c3p0.min_size" value="5"/>
             <property name="hibernate.c3p0.max_size" value="20"/>

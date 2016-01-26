@@ -6,6 +6,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 public class ElectronicDevice extends SmartDevice{
@@ -22,6 +23,8 @@ public class ElectronicDevice extends SmartDevice{
 	
 	@ManyToOne(fetch=FetchType.LAZY, cascade={CascadeType.PERSIST})
 	@JoinColumn(name="PERSON_ID")
+	@XmlTransient
+
 	public Person getPerson() {
 		return person;
 	}
