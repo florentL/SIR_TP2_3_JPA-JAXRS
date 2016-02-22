@@ -17,6 +17,12 @@ Le fichier de mapping des servlet est web.xml (répertoire webapp).
 
 L'URL de base pour accéder au service est /rest/
 
-**/rest/home** permet de récupérer les informations sur chaque home au format JSON (méthode GET)
-
-**http://localhost:8080/myform.html** affiche un formulaire pour saisir de nouvelles personnes. Cela va directement compléter la base de données. Un récapitulatif des informations sera affiché à l'envoi du formulaire.
+**/rest** Accueil du site, il n'y a qu'� se laisser guider pour :
+- la gestion des personnes **/rest/person/**
+		- ajout d'une personne via un formulaire
+		- modification d'une personne **/rest/person/{id}**
+		- suppression d'une personne **/rest/person/delete/{id}**
+- ajouter des maison **/rest/home**
+		- ajout d'une maison via un formulaire
+		- modification d'une maison **/rest/home/{id}**
+		- suppression d'une maison **/rest/home/delete/{id}**
