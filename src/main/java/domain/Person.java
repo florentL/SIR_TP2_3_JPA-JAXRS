@@ -81,7 +81,7 @@ public class Person {
 		this.firstName = firstName;
 	}
 
-	@OneToMany(mappedBy="inhabitant", cascade={CascadeType.PERSIST})
+	@OneToMany(mappedBy="inhabitant", cascade=CascadeType.ALL)
 	public List<Home> getHomes() {
 		return homes;
 	}
@@ -92,8 +92,10 @@ public class Person {
 	}
 
 	public void addHome(Home h){
-		h.setInhabitant(this);
-		this.homes.add(h);
+		if (!this.homes.contains(h)){
+			h.setInhabitant(this);
+			this.homes.add(h);
+		}
 	}
 
 	public String getMail() {
@@ -103,7 +105,7 @@ public class Person {
 		this.mail = mail;
 	}
 	
-	@OneToMany(mappedBy="person", cascade={CascadeType.PERSIST})
+	@OneToMany(mappedBy="person", cascade=CascadeType.ALL, orphanRemoval=true)
 	public List<ElectronicDevice> getEds() {
 		return eds;
 	}
@@ -122,7 +124,7 @@ public class Person {
     @JoinTable(name = "Friends", joinColumns = {
             @JoinColumn(name = "Friend_Id", referencedColumnName = "PERSON_ID")}, inverseJoinColumns = {
             @JoinColumn(name = "FriendOf_Id", referencedColumnName = "PERSON_ID")})
-    @ManyToMany(cascade={CascadeType.PERSIST})
+    @ManyToMany(cascade=CascadeType.ALL)
 	public List<Person> getFriends() {
 		return friends;
 	}
@@ -132,8 +134,25 @@ public class Person {
 	}
 	
 	public void addFriends(Person p){
-		p.friends.add(this);
-		this.friends.add(p);
+		if (!this.friends.contains(p)){
+			p.friends.add(this);
+			this.friends.add(p);
+		}
+	}
+	
+	public void removeFriends(Person p){
+		this.friends.remove(p);
+		p.getFriends().remove(this);
+//		for (int i = 0; i < this.friends.size(); i++){
+//			if (this.friends.get(i).getId() == p.getId()){
+//				this.friends.remove(i);
+//			}
+//		}
+//		for (int i = 0; i < p.getFriends().size(); i++){
+//			if (p.getFriends().get(i).getId() == this.getId()){
+//				p.getFriends().remove(i);
+//			}
+//		}
 	}
 
 	@Override

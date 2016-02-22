@@ -2,14 +2,14 @@ package jpa;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
-import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
+//import javax.persistence.EntityManager;
+//import javax.persistence.EntityManagerFactory;
+//import javax.persistence.EntityTransaction;
+//import javax.persistence.Persistence;
+//import javax.persistence.Query;
+//import javax.persistence.criteria.CriteriaBuilder;
+//import javax.persistence.criteria.CriteriaQuery;
+//import javax.persistence.criteria.Root;
 
 import domain.ElectronicDevice;
 import domain.Heater;
@@ -18,10 +18,11 @@ import domain.Person;
 
 public class JpaTest {
 
-	private EntityManager manager;
+//	private EntityManager manager;
 	
-	public JpaTest (EntityManager manager) {
-		this.manager = manager;
+	public JpaTest () {
+//		this.manager = manager;
+		EntityManagerHelper.getEntityManager();
 	}
 	
 	
@@ -29,12 +30,14 @@ public class JpaTest {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		EntityManagerFactory factory = Persistence.createEntityManagerFactory("mysql");
-		EntityManager manager = factory.createEntityManager();
-		JpaTest test = new JpaTest(manager);
-
-		EntityTransaction tx = manager.getTransaction();
-		tx.begin();
+//		EntityManagerFactory factory = Persistence.createEntityManagerFactory("mysql2");
+//		EntityManager manager = factory.createEntityManager();
+//		JpaTest test = new JpaTest(manager);
+		JpaTest test = new JpaTest();
+		
+//		EntityTransaction tx = manager.getTransaction();
+//		tx.begin();
+		EntityManagerHelper.beginTransaction();
 		try {
 			
 			test.fillBase();
@@ -42,8 +45,16 @@ public class JpaTest {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		tx.commit();
+		EntityManagerHelper.commit();
+//		tx.commit();
 		
+		
+//		Heater heater = EntityManagerHelper.getEntityManager().createNamedQuery("findHeaterById",Heater.class).setParameter("HeaterId", new Long(3)).getSingleResult();
+//		EntityManagerHelper.beginTransaction();
+//
+//		EntityManagerHelper.getEntityManager().remove(heater);
+//		EntityManagerHelper.commit();
+//		
 //		criteria request
 //		CriteriaBuilder criteriaBuilder = manager.getCriteriaBuilder();
 //		CriteriaQuery<String> query = criteriaBuilder.createQuery(String.class);
@@ -81,8 +92,10 @@ public class JpaTest {
 //		Person p2 = manager.createNamedQuery("findPersonById",Person.class).setParameter("PersonId", new Long(1)).getSingleResult();
 //		System.out.println(p2.toString());
 		 
-		manager.close();
-		factory.close();
+		EntityManagerHelper.closeEntityManager();
+		EntityManagerHelper.closeEntityManagerFactory();
+//		manager.close();
+//		factory.close();
 	}
 	
 	public void fillBase() {
@@ -90,7 +103,8 @@ public class JpaTest {
 		Person p2 = new Person("Durant", "Robert", "robert@gmail.com");
 		Person p3 = new Person("Durant", "Micheline", "micheline@gmail.com");
 		Person p4 = new Person("Andronov", "Rumen", "rumen@gmail.com");
-		manager.persist(p);
+		EntityManagerHelper.getEntityManager().persist(p);
+		EntityManagerHelper.getEntityManager().persist(p4);
 		p2.addFriends(p);
 		p.addFriends(p3);
 		p3.addFriends(p4);
@@ -120,26 +134,30 @@ public class JpaTest {
 	}
 	
 	public void getFriendsOf(Person p) {
-		List<Person> persons = manager.createNamedQuery("findPersonFriends",Person.class).setParameter("id", p.getId()).getResultList();
+//		List<Person> persons = manager.createNamedQuery("findPersonFriends",Person.class).setParameter("id", p.getId()).getResultList();
+		List<Person> persons = EntityManagerHelper.getEntityManager().createNamedQuery("findPersonFriends",Person.class).setParameter("id", p.getId()).getResultList();
 		for (Person pers : persons) {
 			System.out.println("Friends : "+pers.toString());
 		}
 	}
 	
 	public void getAllPersons() {
-		List<Person> persons = manager.createNamedQuery("findAllPerson",Person.class).getResultList();
+//		List<Person> persons = manager.createNamedQuery("findAllPerson",Person.class).getResultList();
+		List<Person> persons = EntityManagerHelper.getEntityManager().createNamedQuery("findAllPerson",Person.class).getResultList();
 		for (Person p : persons) {
 			System.out.println(p.toString());
 		}
 	}
 	
 	public void getPersonById(Long id) {
-		Person p = manager.createNamedQuery("findPersonById",Person.class).setParameter("PersonId", id).getSingleResult();
+//		Person p = manager.createNamedQuery("findPersonById",Person.class).setParameter("PersonId", id).getSingleResult();
+		Person p = EntityManagerHelper.getEntityManager().createNamedQuery("findPersonById",Person.class).setParameter("PersonId", id).getSingleResult();
 		System.out.println(p.toString());
 	}
 	
 	public void getPersonByName(String name) {
-		Person p = manager.createNamedQuery("findPersonByName",Person.class).setParameter("PersonName", name).getSingleResult();
+//		Person p = manager.createNamedQuery("findPersonByName",Person.class).setParameter("PersonName", name).getSingleResult();
+		Person p = EntityManagerHelper.getEntityManager().createNamedQuery("findPersonByName",Person.class).setParameter("PersonName", name).getSingleResult();
 		System.out.println(p.toString());
 	}
 }

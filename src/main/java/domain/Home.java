@@ -17,15 +17,18 @@ import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.hibernate.annotations.Cascade;
+
 
 
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "findAllHomes", query = "SELECT h FROM Home h")
+    @NamedQuery(name = "findAllHomes", query = "SELECT h FROM Home h"),
+    @NamedQuery(name = "findHomeById", query = "SELECT h FROM Home h WHERE h.id = :HomeId"),
+    @NamedQuery(name = "findEmptyHome", query = "SELECT h FROM Home h WHERE h.inhabitant is null")
 })
 public class Home {
-
 	private Long id;
 	private String address;
 	private int size;
@@ -75,7 +78,7 @@ public class Home {
 		this.nbRooms = nbRooms;
 	}
 	
-	@ManyToOne(fetch=FetchType.LAZY, cascade={CascadeType.PERSIST})
+	@ManyToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
 	@JoinColumn(name="INHABITANT_ID")
 	@XmlTransient
 	public Person getInhabitant() {
@@ -85,7 +88,12 @@ public class Home {
 		this.inhabitant = inhabitant;
 	}
 	
-	@OneToMany(mappedBy="home", cascade={CascadeType.PERSIST})
+	public void removeInhabitant(){
+		this.inhabitant.getHomes().remove(this);
+		this.setInhabitant(null);
+	}
+	
+	@OneToMany(mappedBy="home", orphanRemoval=true, cascade=CascadeType.ALL)
 	public List<Heater> getHeaters() {
 		return heaters;
 	}
