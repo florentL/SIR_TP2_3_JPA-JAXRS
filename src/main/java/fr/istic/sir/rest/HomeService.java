@@ -24,6 +24,28 @@ import jpa.EntityManagerHelper;
 @Path("/home")
 public class HomeService {
 	@GET
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getHomeJson(){
+		List<Home> homes = EntityManagerHelper.getEntityManager().createNamedQuery("findAllHomes",Home.class).getResultList();
+		return Response.ok(homes).build();
+	}
+	
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/add")
+	public Response postHomeJson(Home h){
+		EntityManagerHelper.beginTransaction();
+		EntityManagerHelper.getEntityManager().persist(h);
+		for (Heater heater : h.getHeaters()){
+			heater.setHome(h);
+		}
+		EntityManagerHelper.commit();
+		return Response.ok().build();
+	}
+	
+	@GET
 	@Consumes(MediaType.APPLICATION_XML)
 	@Produces(MediaType.TEXT_HTML + ";charset=utf-8")
 	public Response getHome(@CookieParam("modif") String modif){
