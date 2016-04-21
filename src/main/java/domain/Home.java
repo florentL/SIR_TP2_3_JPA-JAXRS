@@ -17,27 +17,35 @@ import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.hibernate.annotations.Cascade;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.codehaus.jackson.map.annotate.JsonDeserialize;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
+import fr.istic.sir.rest.CustomPersonDeserializer;
+import fr.istic.sir.rest.CustomPersonSerializer;
 
 
 
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "findAllHomes", query = "SELECT h FROM Home h"),
-    @NamedQuery(name = "findHomeById", query = "SELECT h FROM Home h WHERE h.id = :HomeId"),
-    @NamedQuery(name = "findEmptyHome", query = "SELECT h FROM Home h WHERE h.inhabitant is null")
+	@NamedQuery(name = "findAllHomes", query = "SELECT h FROM Home h"),
+	@NamedQuery(name = "findHomeById", query = "SELECT h FROM Home h WHERE h.id = :HomeId"),
+	@NamedQuery(name = "findEmptyHome", query = "SELECT h FROM Home h WHERE h.inhabitant is null")
 })
+//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Home {
 	private Long id;
 	private String address;
 	private int size;
 	private int nbRooms;
-	
+
+	@JsonDeserialize(using = CustomPersonDeserializer.class)
+	@JsonSerialize(using = CustomPersonSerializer.class)
 	private Person inhabitant;
-	
+
 	private List<Heater> heaters;
-	
+
 	public Home() {
 		super();
 		this.heaters = new ArrayList<Heater>();
@@ -49,10 +57,10 @@ public class Home {
 		this.nbRooms = nbRooms;
 		this.heaters = new ArrayList<Heater>();
 	}
-	
+
 	@Id
-    @GeneratedValue
-    @Column(name="HOME_ID")
+	@GeneratedValue
+	@Column(name="HOME_ID")
 	public Long getId() {
 		return id;
 	}
@@ -77,8 +85,8 @@ public class Home {
 	public void setNbRooms(int nbRooms) {
 		this.nbRooms = nbRooms;
 	}
-	
-	@ManyToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
+
+	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
 	@JoinColumn(name="INHABITANT_ID")
 	@XmlTransient
 	public Person getInhabitant() {
@@ -87,12 +95,12 @@ public class Home {
 	public void setInhabitant(Person inhabitant) {
 		this.inhabitant = inhabitant;
 	}
-	
+
 	public void removeInhabitant(){
 		this.inhabitant.getHomes().remove(this);
 		this.setInhabitant(null);
 	}
-	
+
 	@OneToMany(mappedBy="home", orphanRemoval=true, cascade=CascadeType.ALL)
 	public List<Heater> getHeaters() {
 		return heaters;
@@ -100,10 +108,10 @@ public class Home {
 	public void setHeaters(List<Heater> heaters) {
 		this.heaters = heaters;
 	}
-	
+
 	public void addHeater(Heater h) {
 		h.setHome(this);
 		heaters.add(h);
 	}
-	
+
 }

@@ -14,7 +14,9 @@ import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.xml.bind.annotation.XmlRootElement;
+
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 @Entity
 @NamedQueries({
@@ -23,7 +25,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "findPersonByName", query = "SELECT p FROM Person p WHERE p.name = :PersonName"),
     @NamedQuery(name = "findPersonFriends", query = "SELECT p FROM Person p Join p.friends f WHERE f.id = :id")
 })
-
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Person {
 
 	private Long id;
@@ -31,8 +33,10 @@ public class Person {
 	private String firstName;
 	
 	private String mail;
+	@JsonIgnore
 	private List<Home> homes;
 	private List<ElectronicDevice> eds;
+	@JsonIgnore
 	private List<Person> friends;
 	
 	public Person() {
@@ -143,16 +147,6 @@ public class Person {
 	public void removeFriends(Person p){
 		this.friends.remove(p);
 		p.getFriends().remove(this);
-//		for (int i = 0; i < this.friends.size(); i++){
-//			if (this.friends.get(i).getId() == p.getId()){
-//				this.friends.remove(i);
-//			}
-//		}
-//		for (int i = 0; i < p.getFriends().size(); i++){
-//			if (p.getFriends().get(i).getId() == this.getId()){
-//				p.getFriends().remove(i);
-//			}
-//		}
 	}
 
 	@Override

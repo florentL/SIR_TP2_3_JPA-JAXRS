@@ -21,7 +21,7 @@ public class ElectronicDevice extends SmartDevice{
 		super(consumption);
 	}
 	
-	@ManyToOne(fetch=FetchType.LAZY, cascade={CascadeType.PERSIST})
+	@ManyToOne(fetch=FetchType.EAGER, cascade={CascadeType.PERSIST})
 	@JoinColumn(name="PERSON_ID")
 	@XmlTransient
 

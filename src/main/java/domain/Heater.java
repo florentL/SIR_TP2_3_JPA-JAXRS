@@ -27,7 +27,7 @@ public class Heater extends SmartDevice{
 		super(consumption);
 	}
 	
-	@ManyToOne(fetch=FetchType.LAZY, cascade={CascadeType.PERSIST})
+	@ManyToOne(fetch=FetchType.EAGER, cascade={CascadeType.PERSIST})
 	@JoinColumn(name="HOME_ID")
 	@XmlTransient
 	public Home getHome() {

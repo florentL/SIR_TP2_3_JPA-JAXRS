@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.CookieParam;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -27,24 +28,63 @@ public class HomeService {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getHomeJson(){
-		List<Home> homes = EntityManagerHelper.getEntityManager().createNamedQuery("findAllHomes",Home.class).getResultList();
+		List<Home> homes = null;
+		try {
+			homes = EntityManagerHelper.getEntityManager().createNamedQuery("findAllHomes",Home.class).getResultList();
+		} catch (Exception e) {
+		}
 		return Response.ok(homes).build();
 	}
-	
+	@GET
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/add")
+	public Response getHomeAddJson(){
+		List<Person> persons = null;
+		try {
+			persons = EntityManagerHelper.getEntityManager().createNamedQuery("findAllPerson", Person.class).getResultList();
+		} catch (Exception e) {
+		}
+		return Response.ok(persons).build();
+	}
+
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/add")
 	public Response postHomeJson(Home h){
-		EntityManagerHelper.beginTransaction();
-		EntityManagerHelper.getEntityManager().persist(h);
-		for (Heater heater : h.getHeaters()){
-			heater.setHome(h);
+		if (h.getAddress() != null){
+			EntityManagerHelper.beginTransaction();
+			EntityManagerHelper.getEntityManager().persist(h);
+			for (Heater heater : h.getHeaters()){
+				heater.setHome(h);
+			}
+			EntityManagerHelper.commit();
 		}
-		EntityManagerHelper.commit();
 		return Response.ok().build();
 	}
 	
+	@DELETE
+	@Path("/delete/{id}")
+	public Response deleteHomeJson(@PathParam("id") String id) {
+		Home home = null;
+		try {
+			home = EntityManagerHelper.getEntityManager().createNamedQuery("findHomeById",Home.class).setParameter("HomeId", new Long(id)).getSingleResult();
+
+		} catch (Exception e) {
+		}
+		if (home != null){
+			EntityManagerHelper.beginTransaction();
+			for (int i = 0; i < home.getHeaters().size(); i++) {
+				home.getHeaters().remove(i);
+			}
+			home.setInhabitant(null);
+			EntityManagerHelper.getEntityManager().remove(home);
+			EntityManagerHelper.commit();
+		}
+		return Response.ok().build();
+	}
+
 	@GET
 	@Consumes(MediaType.APPLICATION_XML)
 	@Produces(MediaType.TEXT_HTML + ";charset=utf-8")
@@ -100,7 +140,7 @@ public class HomeService {
 				+ "<input type=\"submit\" value=\"back to main menu\" onclick=\"window.location='/rest'\">"
 				+ "<script src=\"../../js/home.js\" type=\"text/javascript\"></script>"
 				+ "</body></html>";		
-		
+
 		CacheControl cc = new CacheControl();
 		cc.setNoCache(true);
 		return Response.status(200).entity(ret).cacheControl(cc).build();
@@ -249,13 +289,15 @@ public class HomeService {
 		NewCookie c = new NewCookie("modif", "the home " + h.getAddress() + " has been added", "/", null, null, 5, false);
 		CacheControl cc = new CacheControl();
 		cc.setNoCache(true);
-		
+
 		return Response.status(Response.Status.SEE_OTHER)
 				.cookie(c)
 				.cacheControl(cc)
 				.header(HttpHeaders.LOCATION, "/rest/home")
 				.build();
 	}
+
+
 
 	@POST
 	@Path("/delete/{id}")
@@ -275,7 +317,7 @@ public class HomeService {
 		NewCookie c = new NewCookie("modif", "the home " + home.getAddress() + " has been deleted", "/", null, null, 5, false);
 		CacheControl cc = new CacheControl();
 		cc.setNoCache(true);
-		
+
 		return Response.status(Response.Status.SEE_OTHER)
 				.cookie(c)
 				.cacheControl(cc)
