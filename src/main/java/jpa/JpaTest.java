@@ -1,27 +1,21 @@
 package jpa;
 
+import java.util.ArrayList;
 import java.util.List;
 
-//import javax.persistence.EntityManager;
-//import javax.persistence.EntityManagerFactory;
-//import javax.persistence.EntityTransaction;
-//import javax.persistence.Persistence;
-//import javax.persistence.Query;
-//import javax.persistence.criteria.CriteriaBuilder;
-//import javax.persistence.criteria.CriteriaQuery;
-//import javax.persistence.criteria.Root;
+import javax.persistence.Query;
 
-import domain.ElectronicDevice;
-import domain.Heater;
-import domain.Home;
-import domain.Person;
+import domain.MyCommand;
 
 public class JpaTest {
 
-//	private EntityManager manager;
+	static final int[] NUMBERS = {5, 4, 2, 9, 8, 3, 6, 7};
+	static final char[] LETTERS = {'R', 'G', 'P', 'F', 'K', 'T', 'Q', 'V', 'Z', 'X', 'N', 'D', 'A', 'U', 'W', 'H', 'E', 'Y', 'C', 'B', 'S', 'J', 'M'};
+	static final int N = (int) (Math.pow(8, 3) * Math.pow(23, 4));
+	static final int N_LOOP = 300;
+
 	
 	public JpaTest () {
-//		this.manager = manager;
 		EntityManagerHelper.getEntityManager();
 	}
 	
@@ -30,134 +24,89 @@ public class JpaTest {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-//		EntityManagerFactory factory = Persistence.createEntityManagerFactory("mysql2");
-//		EntityManager manager = factory.createEntityManager();
-//		JpaTest test = new JpaTest(manager);
 		JpaTest test = new JpaTest();
-		
-//		EntityTransaction tx = manager.getTransaction();
-//		tx.begin();
 		EntityManagerHelper.beginTransaction();
 		try {
 			
+			test.dropTheTable();
 			test.fillBase();
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		EntityManagerHelper.commit();
-//		tx.commit();
-		
-		
-//		Heater heater = EntityManagerHelper.getEntityManager().createNamedQuery("findHeaterById",Heater.class).setParameter("HeaterId", new Long(3)).getSingleResult();
-//		EntityManagerHelper.beginTransaction();
-//
-//		EntityManagerHelper.getEntityManager().remove(heater);
-//		EntityManagerHelper.commit();
-//		
-//		criteria request
-//		CriteriaBuilder criteriaBuilder = manager.getCriteriaBuilder();
-//		CriteriaQuery<String> query = criteriaBuilder.createQuery(String.class);
-//		Root<Person> from = query.from(Person.class);
-//		query.multiselect(from.get("firstName")).where(from.get("name").in("Andronov"));
-		
-//		String result = manager.createQuery(query).getSingleResult();
-//		System.out.println(result);
-		
-		
-//		for (Home h : resultList) {
-//			System.out.println("home id : " + h.getId());
-//			for (Heater he : h.getHeaters()) {
-//				System.out.println("heaters id : " + he.getId());
-//			}
-//		}
-		// String s = "SELECT e FROM Person as e where e.name=:name";
-
-		 //Query q = manager.createQuery(s,Person.class);
-		// q.setParameter("name", "martin");
-		 //List<Person> res = q.getResultList();
-
-		 //System.err.println(res.size());
-		 //System.err.println(res.get(0).getName());
-
-//		String s = "SELECt h FROM Home h";
-//		List<Home> resultList = manager.createQuery(s, Home.class).getResultList();
-//		for (Home h : resultList) {
-//			System.out.println("home id : " + h.getId());
-//			for (Heater he : h.getHeaters()) {
-//				System.out.println("heaters id : " + he.getId());
-//			}
-//		}
-		
-//		Person p2 = manager.createNamedQuery("findPersonById",Person.class).setParameter("PersonId", new Long(1)).getSingleResult();
-//		System.out.println(p2.toString());
 		 
 		EntityManagerHelper.closeEntityManager();
 		EntityManagerHelper.closeEntityManagerFactory();
-//		manager.close();
-//		factory.close();
 	}
 	
 	public void fillBase() {
-		Person p = new Person("Dupont", "Martin", "martin@gmail.com");
-		Person p2 = new Person("Durant", "Robert", "robert@gmail.com");
-		Person p3 = new Person("Durant", "Micheline", "micheline@gmail.com");
-		Person p4 = new Person("Andronov", "Rumen", "rumen@gmail.com");
-		EntityManagerHelper.getEntityManager().persist(p);
-		EntityManagerHelper.getEntityManager().persist(p4);
-		p2.addFriends(p);
-		p.addFriends(p3);
-		p3.addFriends(p4);
-		Home h = new Home("3 rue des Juifs", 100, 4);
-		Home h2 = new Home("53 rue Jean Jaurès", 450, 13);
-		Home h3 = new Home("1048 rue des Peupliers", 30, 1);
-		p.addHome(h);
-		p2.addHome(h2);
-		p3.addHome(h2);
-		p4.addHome(h3);
-		Heater he = new Heater(2000);
-		Heater he1 = new Heater(1000);
-		Heater he2 = new Heater(1000);
-		Heater he3 = new Heater(20);
-		h.addHeater(he);
-		h2.addHeater(he1);
-		h2.addHeater(he2);
-		h3.addHeater(he3);
-		ElectronicDevice ed = new ElectronicDevice(100);
-		ElectronicDevice ed1 = new ElectronicDevice(200);
-		ElectronicDevice ed2 = new ElectronicDevice(500);
-		ElectronicDevice ed3 = new ElectronicDevice(50);
-		p.addEd(ed);
-		p2.addEd(ed1);
-		p2.addEd(ed2);
-		p4.addEd(ed3);
-	}
-	
-	public void getFriendsOf(Person p) {
-//		List<Person> persons = manager.createNamedQuery("findPersonFriends",Person.class).setParameter("id", p.getId()).getResultList();
-		List<Person> persons = EntityManagerHelper.getEntityManager().createNamedQuery("findPersonFriends",Person.class).setParameter("id", p.getId()).getResultList();
-		for (Person pers : persons) {
-			System.out.println("Friends : "+pers.toString());
+//		for (long i=0;i<N;i++) {
+		for (int i=0;i<N_LOOP;i++) {
+			MyCommand myOrder = new MyCommand();
+			String customId = this.getCustomId(i);
+			myOrder.setCustomId(customId);
+			EntityManagerHelper.getEntityManager().persist(myOrder);
+
 		}
+		
 	}
 	
-	public void getAllPersons() {
-//		List<Person> persons = manager.createNamedQuery("findAllPerson",Person.class).getResultList();
-		List<Person> persons = EntityManagerHelper.getEntityManager().createNamedQuery("findAllPerson",Person.class).getResultList();
-		for (Person p : persons) {
-			System.out.println(p.toString());
+	public String getCustomId(int index) {
+//		Random rand = new Random();
+//		int s = rand.nextInt(N);
+		
+		String awesomeId = formatId(index);
+		
+		return awesomeId;
+	}
+	
+	public String formatId(int s) {
+		int rest = (int) (s % (Math.pow(8, 3)));
+		List<Integer> eight_decomposition = decompose(rest, 8); 
+		
+		// add 0 if the size of eight_decomposition < 3
+		int nbZeroToAdd = 3 - eight_decomposition.size();
+		while (nbZeroToAdd > 0) {
+			eight_decomposition.add(0);
+			nbZeroToAdd--;
 		}
+		
+		List<Integer> twentyThree_decomposition = decompose((int)((s- rest) / (Math.pow(8, 3))), 23); 
+
+		// add 0 if the size of eight_decomposition < 3
+		nbZeroToAdd = 4 - twentyThree_decomposition.size();
+		while (nbZeroToAdd > 0) {
+			twentyThree_decomposition.add(0);
+			nbZeroToAdd--;
+		}
+		
+		String awesomeId = ""+
+				LETTERS[twentyThree_decomposition.get(0)]+
+				LETTERS[twentyThree_decomposition.get(1)]+
+		        NUMBERS[eight_decomposition.get(0)]+
+		        NUMBERS[eight_decomposition.get(1)]+
+				NUMBERS[eight_decomposition.get(2)]+
+				LETTERS[twentyThree_decomposition.get(2)]+
+				LETTERS[twentyThree_decomposition.get(3)]
+				;
+//		System.out.println(awesomeId);
+		return awesomeId;
 	}
 	
-	public void getPersonById(Long id) {
-//		Person p = manager.createNamedQuery("findPersonById",Person.class).setParameter("PersonId", id).getSingleResult();
-		Person p = EntityManagerHelper.getEntityManager().createNamedQuery("findPersonById",Person.class).setParameter("PersonId", id).getSingleResult();
-		System.out.println(p.toString());
+	public List<Integer> decompose (int n, int base) {
+		List<Integer> decomposition = new ArrayList<Integer>();
+		while (n > 0) {
+			int rest = n % base;
+			
+			n = (int) ((n - rest) / base);
+			decomposition.add(rest);
+		}
+		return decomposition;
 	}
 	
-	public void getPersonByName(String name) {
-//		Person p = manager.createNamedQuery("findPersonByName",Person.class).setParameter("PersonName", name).getSingleResult();
-		Person p = EntityManagerHelper.getEntityManager().createNamedQuery("findPersonByName",Person.class).setParameter("PersonName", name).getSingleResult();
-		System.out.println(p.toString());
+	public void dropTheTable() {
+	    Query q = EntityManagerHelper.getEntityManager().createQuery("DELETE FROM MyCommand");
+	    q.executeUpdate();
 	}
 }
